@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/vms30/static/css/main.e82e61ff.css",
+    "main.js": "/vms30/static/js/main.83a596f5.js",
+    "index.html": "/vms30/index.html",
+    "main.e82e61ff.css.map": "/vms30/static/css/main.e82e61ff.css.map",
+    "main.83a596f5.js.map": "/vms30/static/js/main.83a596f5.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e82e61ff.css",
+    "static/js/main.83a596f5.js"
+  ]
+}
