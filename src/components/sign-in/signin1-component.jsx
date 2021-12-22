@@ -1,11 +1,10 @@
-import { React , Component } from "react";
-import { connect } from "react-redux";
-//import { useNavigate } from 'react-router-dom';
+import { React , useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from 'react-router-dom';
 import FormInput from "../form-input/form-input-component";
 import CustomButton from "../custom-button/custom-button-component";
-
 import { setCurrentUser } from "../../redux/user/user-actions";
-//import { selectCurrentUser } from "../../redux/user/user-selectors";
+//import { useParams, useHistory } from "react-router-dom";
 //import bcrypt from "bcryptjs/dist/bcrypt";
 import "./signin-styles.scss"
 
@@ -15,34 +14,36 @@ import "./signin-styles.scss"
 //higher order components are functions that take components
 //as argments and return you a new sooped up component.
 
-class SignIn extends Component {
+const SignIn1 = () => {
+    const navigate = useNavigate();
+    const currentUser = useSelector(setCurrentUser);
+    const dispatch = useDispatch();
+    console.log(currentUser);
+
+    const[userdetails , setUserdetails] =  useState({
+        username: "",
+        password:"",
+    })
+
+    const { username, password } = userdetails;
     
-    constructor(props){
-        super();
-       
-        this.state ={
-            username:"",
-            password:""
-        }
-    }
-  
-
-    handleChange = event =>{
-        const { value, name } = event.target;
-        this.setState({ [name]: value }  )
+    function handleChange(event) {
+        const { name , value } = event.target;        
+        setUserdetails({...userdetails,[name]: value})
+        //console.log({...userdetails,[name]: value});
     }
 
-    handleSubmit = async event => {
+    async function handleSubmit(event) {
         event.preventDefault();        
-        const { username, password } = this.state;        
+               
         var formBody = [];
         var uname = "username";
         var pass = "password";
         formBody.push(uname + "=" + username);
         formBody.push(pass + "=" + password);
         formBody = formBody.join("&");
-        console.log(formBody);  
-        const { setCurrentUser } = this.props;     
+        //console.log(formBody);  
+        //const { setCurrentUser } = this.props;     
         try{
             const accessResponse = 
                     await fetch('http://localhost:9190/api/login',
@@ -55,30 +56,43 @@ class SignIn extends Component {
                 
                 });               
                  const token = await accessResponse.json()
-                 console.log(token);
+                 //console.log(token.status);
+                 dispatch
+                    (setCurrentUser
+                        ({uname:userdetails.username , token:token}
+                    ));
+                 if (token.status === "201"){
+                    navigate("/homepage");                   
+                 }
+                 
+                 //navigate("/homepage", { replace: true });
                  //this.props.navigation.navigate("/homepage");
-                 setCurrentUser
-                        ({uname:username , pass:password})
+                 
             }catch(err){
-                setCurrentUser({ username:"" , password:""})
+                console.log("error");
+                dispatch(
+                    setCurrentUser({ username:"" , password:""}));
                 console.log(err);
             }
     } 
 
-    render(){
+    //render(){
         
-        const { username, password } = this.state             
+        //const { username, password } = this.state             
         return (
             <div className="sign-in">
                 <p className="title">
                     Sign in with your username and password
                  </p>
-                <form onSubmit={this.handleSubmit}>
+                <form onSubmit={handleSubmit}>
                     <FormInput type="text" name="username" 
-                      handleChange={this.handleChange} value={username} 
+                      handleChange={handleChange} 
+                      value={username} 
                        label="username" required/>
                     <FormInput type="password" name="password" 
-                       handleChange={this.handleChange} value={password} label="password" required/>
+                       handleChange={handleChange} 
+                       value={password} 
+                       label="password" required/>
                     
                     <div className="buttons">
                         <CustomButton  
@@ -90,19 +104,20 @@ class SignIn extends Component {
         )
     }
 
-}
+//}
 
 //function that allows us to access the state
 //with the state being our root reducer.
+
 //state is the root reducer
-// const mapStateToProps = ({ state }) =>({
-//     currentUser : selectCurrentUser(state)
+// const mapStateToProps = state => ({
+//     currentUser : state.user.currentUser
 // })
 
-//this is a function which gets dispatch property and return 
-//an object 
-const mapDispatchToProps = dispatch => ({
-    setCurrentUser: user => dispatch(setCurrentUser(user))
-})
+// //this is a function which gets dispatch property and return 
+// //an object 
+// const mapDispatchToProps = dispatch => ({
+//     setCurrentUser: user => dispatch(setCurrentUser(user))
+// })
 
-export default connect(null, mapDispatchToProps)(SignIn);
+export default SignIn1;

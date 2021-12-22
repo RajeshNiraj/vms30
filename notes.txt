@@ -1,0 +1,13 @@
+{ connect } is an higher order components
+
+in hooks redux works from 7.1.0 veriosn which is  a minor change
+to upgrate from 7.0.0. we type 
+yarn upgrade react-redux --latest
+
+in hooks connect is replaced with { useSelector, useDispatch }
+
+useSelector will replace mapStateToProps
+
+useSelector will run whenever that selectorfunction that points to that particular function in the state is going to receive an new value.
+
+useDispatch will replace mapDispatchToProps
